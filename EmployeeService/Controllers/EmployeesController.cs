@@ -16,6 +16,7 @@ namespace EmployeeService.Controllers
         [HttpGet]
         /*[DisableCors] - to restrict a action*/
         /*[EnableCorsAttribute("*", "*", "*")] - to give permission for an action for specified domain*/
+        /*[RequireHttps]-- you can do this only for one controller adding this here instead of webapiconfig*/
         public HttpResponseMessage SomethingGet(string gender="All")
         {
             using (EmployeeDBEntities entities = new EmployeeDBEntities())
@@ -36,6 +37,7 @@ namespace EmployeeService.Controllers
         }
 
         [HttpGet]
+        /*[RequireHttps]-- you can do this only for one action adding this here instead of webapiconfig*/
         public HttpResponseMessage LoadEmployeeById(int id)
         {
             using (EmployeeDBEntities entities = new EmployeeDBEntities())
