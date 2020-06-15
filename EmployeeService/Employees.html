@@ -9,17 +9,30 @@
             var ulEmployees = $('#ulEmployees');
 
             $('#btn').click(function () {
+                var username = $('#txtUsername').val();
+                var password = $('#txtPassword').val();
+
+
                 $.ajax({
                     type: 'GET',
                     url: 'api/Employees',
                     /*dataType: 'jsonp', --this is only for jsonp api call*/
                     dataType: 'json',
+                    headers: {
+                        'Authorization': 'Basic ' + btoa(username + ':' + password)
+                        },
                     success: function (data) {
                         ulEmployees.empty();
                         $.each(data, function (index, val) {
                             var fullName = val.FirstName + ' ' + val.LastName;
-                            ulEmployees.append('<li>' + fullName + '</li>')
+                            ulEmployees.append('<li>' + fullName +' ('+val.Gender +')</li>')
                         });
+                    },
+                    complete: function (jqXHR) {
+                        if (jqXHR.status == '401') {
+                            ulEmployees.empty();
+                            ulEmployees.append('<li>' + jqXHR.status + ' : ' + jqXHR.statusText + '</li>');
+                        }
                     }
                 });
             });
@@ -31,11 +44,13 @@
     </script>
 </head>
 <body>
-    <input id="btn" type="button" value="Get All Employees" />
+    Username: <input id="txtUsername" type="text" />
+    Password: <input id="txtPassword" type="text" />
+    <br /><br />
+    <input id="btn" type="button" value="Authenticate and Get Employees" />
+    <!--input id="btn" type="button" value="Get All Employees" /-->
     <input id="btnClear" type="button" value="Clear" />
-    <ul id="ulEmployees">
-
-    </ul>
+    <ul id="ulEmployees"></ul>
 
 </body>
 </html>

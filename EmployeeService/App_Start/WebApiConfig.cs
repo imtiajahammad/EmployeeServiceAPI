@@ -89,12 +89,14 @@ namespace EmployeeService
             /*EnableCorsAttribute cors = new EnableCorsAttribute("http://localhost:50883,http://pragimtech.com,*","Content-Type,*","GET,POST,*");*/
             /*EnableCorsAttribute cors = new EnableCorsAttribute("http://localhost:50883","*","*");
             config.EnableCors(cors);*/
+            EnableCorsAttribute cors = new EnableCorsAttribute("*", "*", "*");
+            config.EnableCors(cors);
 
 
             /// to redirect uri with http to uri with https 
             /// class RequireHttpsAttribute is written only for this purpose
             /// also you can do this work without putting it in here, and put this inFrontOf controller/acition
-            config.Filters.Add(new RequireHttpsAttribute());
+            ///config.Filters.Add(new RequireHttpsAttribute());
 
 
         }

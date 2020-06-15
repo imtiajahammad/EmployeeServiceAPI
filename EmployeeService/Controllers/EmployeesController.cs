@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Threading;
 using System.Web.Http;
 using System.Web.Http.Cors;
 using EmployeeDataAccess;
@@ -13,10 +14,10 @@ namespace EmployeeService.Controllers
     [EnableCorsAttribute("*","*","*")]/*  - to give permission for a controller for specified domain */
     public class EmployeesController : ApiController
     {
-        [HttpGet]
-        /*[DisableCors] - to restrict a action*/
-        /*[EnableCorsAttribute("*", "*", "*")] - to give permission for an action for specified domain*/
-        /*[RequireHttps]-- you can do this only for one controller adding this here instead of webapiconfig*/
+        /*[HttpGet]
+        //[DisableCors] - to restrict a action
+        //[EnableCorsAttribute("*", "*", "*")] - to give permission for an action for specified domain
+        //[RequireHttps]-- you can do this only for one controller adding this here instead of webapiconfig
         public HttpResponseMessage SomethingGet(string gender="All")
         {
             using (EmployeeDBEntities entities = new EmployeeDBEntities())
@@ -31,6 +32,31 @@ namespace EmployeeService.Controllers
                         return Request.CreateResponse(HttpStatusCode.OK, entities.Employees.Where(e => e.Gender.ToLower() == "female").ToList());
                     default:
                         return Request.CreateErrorResponse(HttpStatusCode.BadRequest, "Value for gender must be All, Male or Female." + gender + " is invalid");
+                }
+                //return entities.Employees.ToList();
+            }
+        }*/
+
+        [HttpGet]
+        /*[DisableCors] - to restrict a action*/
+        /*[EnableCorsAttribute("*", "*", "*")]*/
+        /*[RequireHttps]-- you can do this only for one controller adding this here instead of webapiconfig*/
+        [BasicAuthentication]
+        public HttpResponseMessage SomethingGet(string gender = "All")
+        {
+            string username = Thread.CurrentPrincipal.Identity.Name;
+
+            using (EmployeeDBEntities entities = new EmployeeDBEntities())
+            {
+                switch (username.ToLower())
+                {
+                    //case "all":                        return Request.CreateResponse(HttpStatusCode.OK, entities.Employees.ToList());
+                    case "male":
+                        return Request.CreateResponse(HttpStatusCode.OK, entities.Employees.Where(e => e.Gender.ToLower() == "male").ToList());
+                    case "female":
+                        return Request.CreateResponse(HttpStatusCode.OK, entities.Employees.Where(e => e.Gender.ToLower() == "female").ToList());
+                    default:
+                        return Request.CreateResponse(HttpStatusCode.BadRequest);
                 }
                 /*return entities.Employees.ToList();*/
             }
